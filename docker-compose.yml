@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: 'root'
-      MARIADB_DATABASE: 'projetesiee'
+      MARIADB_DATABASE: 'IGI-3014-TD9t-GP5'
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d:ro
     ports:
