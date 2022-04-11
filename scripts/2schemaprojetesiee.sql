@@ -1,108 +1,76 @@
-CREATE TABLE IF NOT EXISTS Naturechantier
-(
-    IdNaturechantier INT AUTO_INCREMENT,
-    Nature           VARCHAR(50),
-    PRIMARY KEY (IdNaturechantier)
+CREATE TABLE NatureChantier(
+   IdNatureChantier COUNTER,
+   Nature VARCHAR(50),
+   PRIMARY KEY(IdNatureChantier)
 );
 
-CREATE TABLE IF NOT EXISTS Encombrement
-(
-    IdEncombrement   INT AUTO_INCREMENT,
-    Typeencombrement VARCHAR(50),
-    PRIMARY KEY (IdEncombrement)
+CREATE TABLE Encombrement(
+   IdEncombrement COUNTER,
+   TypeEncombrement VARCHAR(50),
+   PRIMARY KEY(IdEncombrement)
 );
 
-CREATE TABLE IF NOT EXISTS ImpactStationnement
-(
-    Idstationnementimpacte INT AUTO_INCREMENT,
-    Typestationnement      VARCHAR(50),
-    PRIMARY KEY (Idstationnementimpacte)
+CREATE TABLE ImpactStationnement(
+   IdStationnementImpact COUNTER,
+   TypeEncombrement VARCHAR(50),
+   PRIMARY KEY(IdStationnementImpact)
 );
 
-CREATE TABLE IF NOT EXISTS NatureEntite
-(
-    IDnatureEntite      INT AUTO_INCREMENT,
-    libellenatureEntite VARCHAR(50),
-    PRIMARY KEY (IDnatureEntite)
+CREATE TABLE NatureEntite(
+   IdNatureEntite COUNTER,
+   LibelleNatureEntite VARCHAR(50) NOT NULL,
+   PRIMARY KEY(IdNatureEntite)
 );
 
-CREATE TABLE IF NOT EXISTS Localisation
-(
-    idlocalisation INT AUTO_INCREMENT,
-    longitute      DECIMAL(17,15),
-    lattitude      DECIMAL(17,15),
-    PRIMARY KEY (idlocalisation)
+CREATE TABLE Localisation(
+   IdLocalisation COUNTER,
+   Longitute DECIMAL(17,15),
+   Latitude DECIMAL(17,15),
+   PRIMARY KEY(IdLocalisation)
 );
 
-CREATE TABLE IF NOT EXISTS Entite
-(
-    IdEntite       INT AUTO_INCREMENT,
-    NomEntite      VARCHAR(50),
-    IdNatureEntite INT NOT NULL,
-    PRIMARY KEY (IdEntite),
-    FOREIGN KEY (IDNatureEntite) REFERENCES NatureEntite (idNatureEntite)
-        ON DELETE cascade
-        ON UPDATE cascade
+CREATE TABLE Entite(
+   IdEntite COUNTER,
+   NomEntite VARCHAR(50) NOT NULL,
+   IdNatureEntite INT NOT NULL,
+   PRIMARY KEY(IdEntite),
+   FOREIGN KEY(IdNatureEntite) REFERENCES NatureEntite(IdNatureEntite)
 );
 
-CREATE TABLE IF NOT EXISTS Chantier
-(
-    IdChantier       varchar(8),
-    Surface          INT,
-    idDatefin        DATE NOT NULL,
-    idDatedebut      DATE NOT NULL,
-    idlocalisation   INT NOT NULL,
-    IdNaturechantier INT NOT NULL,
-    IdEntite         INT NOT NULL,
-    PRIMARY KEY (IdChantier),
-    UNIQUE (IdEntite),
-    FOREIGN KEY (idlocalisation) REFERENCES Localisation (idlocalisation)
-        ON DELETE cascade
-        ON UPDATE cascade,
-    FOREIGN KEY (IdNaturechantier) REFERENCES Naturechantier (IdNaturechantier)
-        ON DELETE cascade
-        ON UPDATE cascade,
-    FOREIGN KEY (IdEntite) REFERENCES Entite (IdEntite)
-        ON DELETE cascade
-        ON UPDATE cascade
+CREATE TABLE Chantier(
+   IdChantier VARCHAR(8),
+   Surface DECIMAL(10,6),
+   IdDate_fin DATE NOT NULL,
+   IdDate_debut DATE NOT NULL,
+   IdLocalisation INT NOT NULL,
+   IdNatureChantier INT NOT NULL,
+   IdEntite_MOE INT NOT NULL,
+   PRIMARY KEY(IdChantier),
+   FOREIGN KEY(IdLocalisation) REFERENCES Localisation(IdLocalisation),
+   FOREIGN KEY(IdNatureChantier) REFERENCES NatureChantier(IdNatureChantier),
+   FOREIGN KEY(IdEntite_MOE) REFERENCES Entite(IdEntite)
 );
 
-CREATE TABLE IF NOT EXISTS MOA
-(
-    IdChantier varchar(8),
-    IdEntite   INT,
-    PRIMARY KEY (IdChantier, IdEntite),
-    FOREIGN KEY (IdChantier) REFERENCES Chantier (IdChantier)
-        ON DELETE cascade
-        ON UPDATE cascade,
-    FOREIGN KEY (IdEntite) REFERENCES Entite (IdEntite)
-        ON DELETE cascade
-        ON UPDATE cascade
-
+CREATE TABLE MOA(
+   IdChantier VARCHAR(8),
+   IdEntite_MOA INT,
+   PRIMARY KEY(IdChantier, IdEntite_MOA),
+   FOREIGN KEY(IdChantier) REFERENCES Chantier(IdChantier),
+   FOREIGN KEY(IdEntite_MOA) REFERENCES Entite(IdEntite)
 );
 
-CREATE TABLE IF NOT EXISTS typedencombrement
-(
-    IdChantier     varchar(8),
-    IdEncombrement INT,
-    PRIMARY KEY (IdChantier, IdEncombrement),
-    FOREIGN KEY (IdChantier) REFERENCES Chantier (IdChantier)
-        ON DELETE cascade
-        ON UPDATE cascade,
-    FOREIGN KEY (IdEncombrement) REFERENCES Encombrement (IdEncombrement)
-        ON DELETE cascade
-        ON UPDATE cascade
+CREATE TABLE TypeEncombrement(
+   IdChantier VARCHAR(8),
+   IdEncombrement INT,
+   PRIMARY KEY(IdChantier, IdEncombrement),
+   FOREIGN KEY(IdChantier) REFERENCES Chantier(IdChantier),
+   FOREIGN KEY(IdEncombrement) REFERENCES Encombrement(IdEncombrement)
 );
 
-CREATE TABLE IF NOT EXISTS typedestationnementimpacte
-(
-    IdChantier             varchar(8),
-    Idstationnementimpacte INT,
-    PRIMARY KEY (IdChantier, Idstationnementimpacte),
-    FOREIGN KEY (IdChantier) REFERENCES Chantier (IdChantier)
-        ON DELETE cascade
-        ON UPDATE cascade,
-    FOREIGN KEY (Idstationnementimpacte) REFERENCES ImpactStationnement (Idstationnementimpacte)
-        ON DELETE cascade
-        ON UPDATE cascade
+CREATE TABLE TypeStationnementImpacte(
+   IdChantier VARCHAR(8),
+   IdStationnementImpact INT,
+   PRIMARY KEY(IdChantier, IdStationnementImpact),
+   FOREIGN KEY(IdChantier) REFERENCES Chantier(IdChantier),
+   FOREIGN KEY(IdStationnementImpact) REFERENCES ImpactStationnement(IdStationnementImpact)
 );
