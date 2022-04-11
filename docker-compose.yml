@@ -19,7 +19,7 @@ services:
     links:
       - mariadatabase
     environment:
-      PMA_HOST: db
+      PMA_HOST: mariadatabase
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
     ports:
