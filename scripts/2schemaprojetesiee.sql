@@ -53,7 +53,7 @@ CREATE TABLE MOA(
 
 CREATE TABLE TypeEncombrement(
    IdChantier VARCHAR(8),
-   IdEncombrement INT,
+   IdEncombrement INT, -- **************************** A CHANGER EN SET ****************************
    PRIMARY KEY(IdChantier, IdEncombrement),
    FOREIGN KEY(IdChantier) REFERENCES Chantier(IdChantier) ON UPDATE CASCADE ON DELETE CASCADE,
    FOREIGN KEY(IdEncombrement) REFERENCES Encombrement(IdEncombrement) ON UPDATE CASCADE ON DELETE CASCADE
@@ -61,7 +61,7 @@ CREATE TABLE TypeEncombrement(
 
 CREATE TABLE TypeStationnementImpacte(
    IdChantier VARCHAR(8),
-   IdStationnementImpact INT,
+   IdStationnementImpact INT, -- **************************** A CHANGER EN SET ****************************
    PRIMARY KEY(IdChantier, IdStationnementImpact),
    FOREIGN KEY(IdChantier) REFERENCES Chantier(IdChantier) ON UPDATE CASCADE ON DELETE CASCADE,
    FOREIGN KEY(IdStationnementImpact) REFERENCES ImpactStationnement(IdStationnementImpact) ON UPDATE CASCADE ON DELETE CASCADE
