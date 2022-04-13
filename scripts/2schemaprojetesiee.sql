@@ -24,7 +24,7 @@ CREATE TABLE ImpactStationnement(
 
 CREATE TABLE Localisation(
    IdLocalisation INT AUTO_INCREMENT,
-   Longitute DECIMAL(17,15),
+   Longitude DECIMAL(17,15),
    Latitude DECIMAL(17,15),
    PRIMARY KEY(IdLocalisation)
 );
