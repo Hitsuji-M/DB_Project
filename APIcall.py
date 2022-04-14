@@ -62,25 +62,27 @@ class DatabaseHandler:
         impact = self.file["facet_groups"][6]["facets"]   
         
         for facetMOE in moe:
-            value = facetMOE["name"].replace("'", "\\'")
+            value = facetMOE["name"].replace("'", "''")
             self.cur.execute(f"INSERT INTO Entite VALUES(NULL, '{value}');")
         for facetMOA in moa:
-            value = facetMOA["name"].replace("'", "\\'")
+            value = facetMOA["name"].replace("'", "''")
             self.cur.execute(f"INSERT INTO Entite VALUES(NULL, '{value}');")
         for facetSyn in synthese:
-            value = facetSyn["name"].replace("'", "\\'")
+            value = facetSyn["name"].replace("'", "''")
             self.cur.execute(f"INSERT INTO NatureChantier VALUES(NULL, '{value}');")
         for facetDet in detail:
-            value = facetDet["name"].replace("'", "\\'")
+            value = facetDet["name"].replace("'", "''")
             self.cur.execute(f"INSERT INTO Encombrement VALUES(NULL, '{value}');")
         for facetImp in impact:
-            value = facetImp["name"].replace("'", "\\'")
+            value = facetImp["name"].replace("'", "''")
             self.cur.execute(f"INSERT INTO ImpactStationnement VALUES(NULL, '{value}');")
         self.cnx.commit()
 
     def insertRecords(self) -> None:
         records = self.file["records"]
         for recordID, record in enumerate(records):
+            print(json.dumps(record, indent=4, sort_keys=True))
+
             latitude = record["geometry"]["coordinates"][0]
             longitude = record["geometry"]["coordinates"][1]
             self.cur.execute(f"INSERT INTO Localisation VALUES({recordID}, {longitude}, {latitude});")
@@ -90,29 +92,33 @@ class DatabaseHandler:
             num = fields["num_emprise"]
             surface = fields["surface"]
             debut, fin = fields["date_debut"], fields["date_fin"]
-            chantier = fields["chantier_synthese"].replace("'", "\\'")
-            moe = fields["chantier_categorie"].replace("'", "\\'")
-            moa = fields["moa_principal"].replace("'", "\\'")
-            detail = fields["localisation_detail"].replace("'", "\\'")
-            station = fields["localisation_stationnement"].replace("'", "\\'")
+            chantier = fields["chantier_synthese"].replace("'", "''")
+            moe = fields["chantier_categorie"].replace("'", "''")
+            moa = fields["moa_principal"].replace("'", "''")
+            detail = "('" + "','".join(fields["localisation_detail"].replace("'", "''").split("|")) + "')"
+            station = "('" + "','".join(fields["localisation_stationnement"].replace("'", "''").split("|")) + "')"
         
-            self.cur.execute(f"SELECT idLocalisation FROM Localisation WHERE 'Longitude' = {longitude} AND Latitude = {latitude};")
+            self.cur.execute(f"SELECT idLocalisation FROM `Localisation` WHERE `Longitute` = {longitude} AND `Latitude` = {latitude};")
             idLoc = self.cur.fetchone()[0]
-            self.cur.execute(f"SELECT idNatureChantier FROM NatureChantier WHERE Nature = {chantier};")
+            self.cur.execute(f"SELECT idNatureChantier FROM `NatureChantier` WHERE `Nature` = '{chantier}';")
             idNC = self.cur.fetchone()[0]
-            self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite = {moe};")
+            self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite LIKE '{moe}';")
             idMOE = self.cur.fetchone()[0]
-            self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite = {moa};")
+            self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite LIKE '{moa}';")
             idMOA = self.cur.fetchone()[0]
-            self.cur.execute(f"SELECT idEncombrement FROM Encombrement WHERE TypeEncombrement = {detail};")
-            idEnc = self.cur.fetchone()[0]
-            self.cur.execute(f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeEncombrement = {station};")
-            idIS = self.cur.fetchone()[0]
+            self.cur.execute(f"SELECT idEncombrement FROM Encombrement WHERE TypeEncombrement IN {detail};")
+            valEnc = self.cur.fetchall()
+            self.cur.execute(f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeEncombrement IN {station};")
+            valIS= self.cur.fetchall()
 
-            self.cur.execute(f"INSERT INTO Chantier VALUES('{num}', {surface}, {debut}, {fin}, {idLoc}, {idNC}, {idMOE});")
+            print(debut, fin)
+            self.cur.execute(f"INSERT INTO Chantier VALUES('{num}', {surface}, '{fin}', '{debut}', {idLoc}, {idNC}, {idMOE});")
             self.cur.execute(f"INSERT INTO MOA VALUES('{num}', {idMOA});")
-            self.cur.execute(f"INSERT INTO TypeEncombrement VALUES('{num}', {idEnc});")
-            self.cur.execute(f"INSERT INTO TypeStationnementImpacte VALUES('{num}', {idIS});")
+
+            for val in valEnc:
+                self.cur.execute(f"INSERT INTO TypeEncombrement VALUES('{num}', {val[0]});")
+            for val in valIS:
+                self.cur.execute(f"INSERT INTO TypeStationnementImpacte VALUES('{num}', {val[0]});")
             self.cnx.commit()
 
 if __name__ == '__main__':
