@@ -36,6 +36,8 @@ class DatabaseHandler:
         self.file = file
         self.cnx = cnx
         self.cur = cnx.cursor()
+
+        self.clearValues()
         self.insertFacets()
         self.insertRecords()
 
@@ -53,6 +55,18 @@ class DatabaseHandler:
             json.dump(jsondata, outfile)
 
         print("Mise à jour finie !")
+
+    def clearValues(self) -> None:
+        self.cur.execute("DELETE FROM TypeEncombrement;")
+        self.cur.execute("DELETE FROM TypeStationnementImpacte;")
+        self.cur.execute("DELETE FROM MOA;")
+        self.cur.execute("DELETE FROM Chantier;")
+        self.cur.execute("DELETE FROM Localisation; ")
+        self.cur.execute("DELETE FROM Encombrement;")
+        self.cur.execute("DELETE FROM NatureChantier; ")
+        self.cur.execute("DELETE FROM Entite;")
+        self.cur.execute("DELETE FROM ImpactStationnement;")
+        self.cnx.commit()
 
     def insertFacets(self) -> None:
         moe = self.file["facet_groups"][2]["facets"]
