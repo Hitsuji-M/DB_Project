@@ -112,7 +112,7 @@ class DatabaseHandler:
             detail = "('" + "','".join(fields["localisation_detail"].replace("'", "''").split("|")) + "')"
             station = "('" + "','".join(fields["localisation_stationnement"].replace("'", "''").split("|")) + "')"
         
-            self.cur.execute(f"SELECT idLocalisation FROM `Localisation` WHERE `Longitute` = {longitude} AND `Latitude` = {latitude};")
+            self.cur.execute(f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
             idLoc = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idNatureChantier FROM `NatureChantier` WHERE `Nature` = '{chantier}';")
             idNC = self.cur.fetchone()[0]
