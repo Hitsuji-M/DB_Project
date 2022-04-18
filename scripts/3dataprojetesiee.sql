@@ -6305,7 +6305,7 @@ INSERT INTO Localisation (Longitude, Latitude, IdLocalisation) VALUES
 
 
 --Chantier
-INSERT INTO Chantier (IdChantier,Surface, IdDate_debut, IdDate_fin,IdLocalisation,NatureChantier,IdEntite_MOE) VALUES
+INSERT INTO Chantier (IdChantier,Surface, IdDate_debut, IdDate_fin,IdLocalisation,IdNatureChantier,IdEntite_MOE) VALUES
 ("EC101297",172.03,'2019-02-18','2024-02-18',1,18,3),
 ("EC101299",153.39,'2019-02-18','2024-02-18',2,18,3),
 ("EC102107",433.24,'2019-07-03','2023-03-31',3,18,3),
@@ -12540,7 +12540,7 @@ INSERT INTO Chantier (IdChantier,Surface, IdDate_debut, IdDate_fin,IdLocalisatio
 
 
 --ImpactStationnement
-INSERT INTO ImpactStationnement (IdChantier,IdStationnementImpact) VALUES
+INSERT INTO TypeStationnementImpact(IdChantier,IdStationnementImpact) VALUES
 ("EC101297",''),
 ("EC101299",''),
 ("EC102107",''),
