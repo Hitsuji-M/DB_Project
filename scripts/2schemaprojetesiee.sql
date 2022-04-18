@@ -31,11 +31,11 @@ CREATE TABLE IF NOT EXISTS Localisation(
 
 CREATE TABLE IF NOT EXISTS Chantier(
    IdChantier VARCHAR(8),
-   Surface DECIMAL(10,6),
+   Surface DECIMAL(11,6),
    IdDate_fin DATE NOT NULL,
    IdDate_debut DATE NOT NULL,
    IdLocalisation INT NOT NULL,
-   IdNatureChantier INT NOT NULL,
+   IdNatureChantier INT,
    IdEntite_MOE INT NOT NULL,
    PRIMARY KEY(IdChantier),
    FOREIGN KEY(IdLocalisation) REFERENCES Localisation(IdLocalisation) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS MOA(
 
 CREATE TABLE IF NOT EXISTS TypeEncombrement(
    IdChantier VARCHAR(8),
-   IdEncombrement INT, -- **************************** A CHANGER EN SET ****************************
+   IdEncombrement INT, -- **************************** POSSIBLE SET POUR EXCEL MAIS CONSERVER POUR SCRIPT PYTHON ****************************
    PRIMARY KEY(IdChantier, IdEncombrement),
    FOREIGN KEY(IdChantier) REFERENCES Chantier(IdChantier) ON UPDATE CASCADE ON DELETE CASCADE,
    FOREIGN KEY(IdEncombrement) REFERENCES Encombrement(IdEncombrement) ON UPDATE CASCADE ON DELETE CASCADE
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS TypeEncombrement(
 
 CREATE TABLE IF NOT EXISTS TypeStationnementImpacte(
    IdChantier VARCHAR(8),
-   IdStationnementImpact INT, -- **************************** A CHANGER EN SET ****************************
+   IdStationnementImpact INT, -- **************************** POSSIBLE SET POUR EXCEL MAIS CONSERVER POUR SCRIPT PYTHON ****************************
    PRIMARY KEY(IdChantier, IdStationnementImpact),
    FOREIGN KEY(IdChantier) REFERENCES Chantier(IdChantier) ON UPDATE CASCADE ON DELETE CASCADE,
    FOREIGN KEY(IdStationnementImpact) REFERENCES ImpactStationnement(IdStationnementImpact) ON UPDATE CASCADE ON DELETE CASCADE

@@ -94,28 +94,52 @@ class DatabaseHandler:
 
     def insertRecords(self) -> None:
         records = self.file["records"]
-        for recordID, record in enumerate(records):
-            print(json.dumps(record, indent=4, sort_keys=True))
+        for record in records:
+            #print(json.dumps(record, indent=4, sort_keys=True))
 
-            latitude = record["geometry"]["coordinates"][0]
-            longitude = record["geometry"]["coordinates"][1]
-            self.cur.execute(f"INSERT INTO Localisation VALUES({recordID}, {longitude}, {latitude});")
-            self.cnx.commit()
+            try:
+                latitude = record["geometry"]["coordinates"][0]
+                longitude = record["geometry"]["coordinates"][1]
+            except KeyError as _:
+                latitude, longitude = 0.0, 0.0
+
+            self.cur.execute(f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
+            if len(self.cur.fetchall()) == 0:
+                self.cur.execute(f"INSERT INTO Localisation VALUES(NULL, {longitude}, {latitude});")
+                self.cnx.commit()
 
             fields = record["fields"]
             num = fields["num_emprise"]
+            print(num)
+
             surface = fields["surface"]
-            debut, fin = fields["date_debut"], fields["date_fin"]
-            chantier = fields["chantier_synthese"].replace("'", "''")
+            debut, fin = fields["date_debut"], fields["date_debut"]
+
+            try:
+                chantier = fields["chantier_synthese"].replace("'", "''")
+            except KeyError as _:
+                chantier = "NULL"
+
             moe = fields["chantier_categorie"].replace("'", "''")
             moa = fields["moa_principal"].replace("'", "''")
-            detail = "('" + "','".join(fields["localisation_detail"].replace("'", "''").split("|")) + "')"
-            station = "('" + "','".join(fields["localisation_stationnement"].replace("'", "''").split("|")) + "')"
-        
+
+            try:
+                detail = "('" + "','".join(fields["localisation_detail"].replace("'", "''").split("/")) + "')"
+            except KeyError as _:
+                detail = "('')"
+
+            try:
+                station = "('" + "','".join(fields["localisation_stationnement"].replace("'", "''").split("|")) + "')"
+            except KeyError as _:
+                station = "('')"
+
             self.cur.execute(f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
             idLoc = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idNatureChantier FROM `NatureChantier` WHERE `Nature` = '{chantier}';")
-            idNC = self.cur.fetchone()[0]
+            try:
+                idNC = self.cur.fetchone()[0]
+            except TypeError as _:
+                idNC = "NULL"
             self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite LIKE '{moe}';")
             idMOE = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite LIKE '{moa}';")
@@ -123,9 +147,9 @@ class DatabaseHandler:
             self.cur.execute(f"SELECT idEncombrement FROM Encombrement WHERE TypeEncombrement IN {detail};")
             valEnc = self.cur.fetchall()
             self.cur.execute(f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeEncombrement IN {station};")
-            valIS= self.cur.fetchall()
+            valIS = self.cur.fetchall()
 
-            print(debut, fin)
+            #print(debut, fin)
             self.cur.execute(f"INSERT INTO Chantier VALUES('{num}', {surface}, '{fin}', '{debut}', {idLoc}, {idNC}, {idMOE});")
             self.cur.execute(f"INSERT INTO MOA VALUES('{num}', {idMOA});")
 
