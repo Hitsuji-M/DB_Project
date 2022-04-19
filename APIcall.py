@@ -67,6 +67,7 @@ class DatabaseHandler:
         self.cur.execute("DELETE FROM Entite;")
         self.cur.execute("DELETE FROM ImpactStationnement;")
         self.cnx.commit()
+        print("Valeurs supprimées")
 
     def insertFacets(self) -> None:
         moe = self.file["facet_groups"][2]["facets"]
@@ -91,6 +92,7 @@ class DatabaseHandler:
             value = facetImp["name"].replace("'", "''")
             self.cur.execute(f"INSERT INTO ImpactStationnement VALUES(NULL, '{value}');")
         self.cnx.commit()
+        print("Insertion des facets finie")
 
     def insertRecords(self) -> None:
         records = self.file["records"]
@@ -110,10 +112,10 @@ class DatabaseHandler:
 
             fields = record["fields"]
             num = fields["num_emprise"]
-            print(num)
+            #print(num)
 
             surface = fields["surface"]
-            debut, fin = fields["date_debut"], fields["date_debut"]
+            debut, fin = fields["date_debut"], fields["date_fin"]
 
             try:
                 chantier = fields["chantier_synthese"].replace("'", "''")
@@ -158,6 +160,7 @@ class DatabaseHandler:
             for val in valIS:
                 self.cur.execute(f"INSERT INTO TypeStationnementImpacte VALUES('{num}', {val[0]});")
             self.cnx.commit()
+        print("Insertion des records finie")
 
 if __name__ == '__main__':
     DatabaseHandler()
