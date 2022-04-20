@@ -10,6 +10,7 @@ URL = "https://opendata.paris.fr/api/records/1.0/search/?dataset=chantiers-a-par
       "=date_debut&facet=date_fin&facet=chantier_categorie&facet=moa_principal&facet=chantier_synthese&facet" \
       "=localisation_detail&facet=localisation_stationnement&facet=surface&facet=geo_point_2d"
 
+
 class DatabaseHandler:
     def __init__(self, needUpdate=False, show=False):
         file = "error"
@@ -47,7 +48,7 @@ class DatabaseHandler:
         if res.status_code < 200 or res.status_code >= 300:
             print("mauvaise réponse : ", res.status_code)
             sys.exit(1)
-            
+
         print("Requête réalisée avec succès !")
         jsondata = res.json()
 
@@ -74,8 +75,8 @@ class DatabaseHandler:
         moa = self.file["facet_groups"][3]["facets"]
         synthese = self.file["facet_groups"][4]["facets"]
         detail = self.file["facet_groups"][5]["facets"]
-        impact = self.file["facet_groups"][6]["facets"]   
-        
+        impact = self.file["facet_groups"][6]["facets"]
+
         for facetMOE in moe:
             value = facetMOE["name"].replace("'", "''")
             self.cur.execute(f"INSERT INTO Entite VALUES(NULL, '{value}');")
@@ -97,7 +98,7 @@ class DatabaseHandler:
     def insertRecords(self) -> None:
         records = self.file["records"]
         for record in records:
-            #print(json.dumps(record, indent=4, sort_keys=True))
+            # print(json.dumps(record, indent=4, sort_keys=True))
 
             try:
                 latitude = record["geometry"]["coordinates"][0]
@@ -105,14 +106,15 @@ class DatabaseHandler:
             except KeyError as _:
                 latitude, longitude = 0.0, 0.0
 
-            self.cur.execute(f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
+            self.cur.execute(
+                f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
             if len(self.cur.fetchall()) == 0:
                 self.cur.execute(f"INSERT INTO Localisation VALUES(NULL, {longitude}, {latitude});")
                 self.cnx.commit()
 
             fields = record["fields"]
             num = fields["num_emprise"]
-            #print(num)
+            # print(num)
 
             surface = fields["surface"]
             debut, fin = fields["date_debut"], fields["date_fin"]
@@ -135,7 +137,8 @@ class DatabaseHandler:
             except KeyError as _:
                 station = "('')"
 
-            self.cur.execute(f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
+            self.cur.execute(
+                f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
             idLoc = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idNatureChantier FROM `NatureChantier` WHERE `Nature` = '{chantier}';")
             try:
@@ -148,11 +151,13 @@ class DatabaseHandler:
             idMOA = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idEncombrement FROM Encombrement WHERE TypeEncombrement IN {detail};")
             valEnc = self.cur.fetchall()
-            self.cur.execute(f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeEncombrement IN {station};")
+            self.cur.execute(
+                f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeEncombrement IN {station};")
             valIS = self.cur.fetchall()
 
-            #print(debut, fin)
-            self.cur.execute(f"INSERT INTO Chantier VALUES('{num}', {surface}, '{fin}', '{debut}', {idLoc}, {idNC}, {idMOE});")
+            # print(debut, fin)
+            self.cur.execute(
+                f"INSERT INTO Chantier VALUES('{num}', {surface}, '{fin}', '{debut}', {idLoc}, {idNC}, {idMOE});")
             self.cur.execute(f"INSERT INTO MOA VALUES('{num}', {idMOA});")
 
             for val in valEnc:
@@ -162,5 +167,12 @@ class DatabaseHandler:
             self.cnx.commit()
         print("Insertion des records finie")
 
+
 if __name__ == '__main__':
-    DatabaseHandler()
+    needupdate = False
+    show = False
+    if "update" in sys.argv[1:]:
+        needupdate = True
+    if "show" in sys.argv[1:]:
+        show = True
+    DatabaseHandler(needupdate, show)
