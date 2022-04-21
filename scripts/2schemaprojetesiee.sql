@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS Entite(
 
 CREATE TABLE IF NOT EXISTS Encombrement(
    IdEncombrement INT AUTO_INCREMENT,
-   TypeEncombrement VARCHAR(50),
+   NomEncombrement VARCHAR(50),
    PRIMARY KEY(IdEncombrement)
 );
 
 CREATE TABLE IF NOT EXISTS ImpactStationnement(
    IdStationnementImpact INT AUTO_INCREMENT,
-   TypeEncombrement VARCHAR(50),
+   TypeStationnement VARCHAR(50),
    PRIMARY KEY(IdStationnementImpact)
 );
 
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS MOA(
    FOREIGN KEY(IdEntite_MOA) REFERENCES Entite(IdEntite) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS TypeEncombrement(
+CREATE TABLE IF NOT EXISTS TypeEncombrement (
    IdChantier VARCHAR(8),
    IdEncombrement INT, -- **************************** POSSIBLE SET POUR EXCEL MAIS CONSERVER POUR SCRIPT PYTHON ****************************
    PRIMARY KEY(IdChantier, IdEncombrement),

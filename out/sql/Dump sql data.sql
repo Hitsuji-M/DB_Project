@@ -5717,7 +5717,7 @@ INSERT INTO `Chantier` (`IdChantier`, `Surface`, `IdDate_fin`, `IdDate_debut`, `
 -- Déchargement des données de la table `Encombrement`
 --
 
-INSERT INTO `Encombrement` (`IdEncombrement`, `TypeEncombrement`) VALUES
+INSERT INTO `Encombrement` (`IdEncombrement`, `NomEncombrement`) VALUES
 (4, 'EMPRISE_TROTTOIR'),
 (5, 'EMPRISE_CHAUSSEE'),
 (6, 'EMPRISE_PISTE_CYCLABLE');
@@ -5788,7 +5788,7 @@ INSERT INTO `Entite` (`IdEntite`, `NomEntite`) VALUES
 
 
 
-INSERT INTO `ImpactStationnement` (`IdStationnementImpact`, `TypeEncombrement`) VALUES
+INSERT INTO `ImpactStationnement` (`IdStationnementImpact`, `TypeStationnement`) VALUES
 (11, 'STATIONNEMENT_PAYANT'),
 (12, 'ZONE_LIVRAISON'),
 (13, 'DEUX_ROUES'),

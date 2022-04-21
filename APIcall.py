@@ -149,10 +149,10 @@ class DatabaseHandler:
             idMOE = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite LIKE '{moa}';")
             idMOA = self.cur.fetchone()[0]
-            self.cur.execute(f"SELECT idEncombrement FROM Encombrement WHERE TypeEncombrement IN {detail};")
+            self.cur.execute(f"SELECT idEncombrement FROM Encombrement WHERE NomEncombrement IN {detail};")
             valEnc = self.cur.fetchall()
             self.cur.execute(
-                f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeEncombrement IN {station};")
+                f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeStationnement IN {station};")
             valIS = self.cur.fetchall()
 
             # print(debut, fin)
