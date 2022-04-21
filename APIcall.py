@@ -163,4 +163,4 @@ class DatabaseHandler:
         print("Insertion des records finie")
 
 if __name__ == '__main__':
-    DatabaseHandler()
+    DatabaseHandler(True)
