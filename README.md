@@ -1,5 +1,5 @@
 <p align="center">
-A simple data pull and json converter to fully functional database using docker, python and MariaDB<br>
+A simple data pull and json converter to fully functional database using Docker Compose, Python and MariaDB<br>
 </p>
 
 
@@ -39,4 +39,4 @@ This project was made by a group of 4 :
 - Erwann "[Hitsuji](https://github.com/Hitsuji-M)" Masson (Developer)
 - Loris "[ZEN](https://github.com/Lolozendev)" Pistilli (Developer)
 - Franck "Francky" Jiang (Database designer) 
-- Elie "Gyoza" Duboux (Databse designer)
+- Elie "Gyoza" Duboux (Database designer)
