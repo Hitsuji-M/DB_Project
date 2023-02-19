@@ -1,6 +1,7 @@
 version: '3.1'
 services:
-  #serveur de base de donnees
+
+  # Database server
   mariadatabase:
     image: mariadb:latest
     container_name: mariadbprojet
