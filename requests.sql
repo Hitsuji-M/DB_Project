@@ -1,4 +1,4 @@
--- Requetes pour vider les données de la base
+-- Clear all the database rows
 DELETE FROM TypeEncombrement;
 DELETE FROM TypeStationnementImpacte;
 DELETE FROM MOA;
@@ -9,22 +9,21 @@ DELETE FROM NatureChantier;
 DELETE FROM Entite;
 DELETE FROM ImpactStationnement;
 
--- Selectionne tous les impacts sur stationnement possibles
+-- Selects all possible parking impacts
 SELECT TypeStationnement FROM ImpactStationnement;
 
--- Sélectionne tous les MOA
+-- Selects all project owners (MOA)
 SELECT DISTINCT NomEntite FROM Entite e INNER JOIN MOA m ON e.IdEntite = m.IdEntite_MOA;
 
--- Selectionne tous les MOE
+-- Select all project managers (MOE)
 SELECT DISTINCT NomEntite FROM Entite e INNER JOIN Chantier c ON e.IdEntite = c.IdEntite_MOE;
 
--- Nombre de chantiers entrepris par l'entité "Ville de Paris"
+-- Number of projects undertaken by the "Ville de Paris" entity
 SELECT DISTINCT NomEntite, COUNT(c.IdChantier) AS "Nombre de chantiers"
 FROM Entite e INNER JOIN Chantier c ON e.IdEntite = c.IdEntite_MOE
 WHERE UPPER(NomEntite) LIKE 'VILLE DE PARIS%';
 
--- Sélectionne le numéro de chantier + superficie + coordonnées + dates de tous les chantiers de +100m^2 et qui n'ont pas d'encombrements
--- Sélectionne le numéro de chantier + superficie + coordonnées + dates de tous les chantiers de +100m^2 et qui n'ont pas d'impact sur station
+-- Selects the site number + area + coordinates + dates of all the sites of +100m^2 and that have no impact on parking
 SELECT  c.idChantier AS "Num chantier", e.NomEntite, Surface, IdDate_debut AS "Date début", IdDate_fin AS "Date Fin", Latitude, Longitude
 FROM Chantier c INNER JOIN Localisation l ON c.IdLocalisation = l.IdLocalisation
                 LEFT JOIN TypeStationnementImpacte tsi ON c.IdChantier = tsi.IdChantier
