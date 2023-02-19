@@ -1,6 +1,5 @@
 <p align="center">
 A simple data pull and json converter to fully functional database using docker, python and MariaDB<br>
-[![Python][python_shield]][python_link] [![MariaDB][mariadb_shield]][mariadb_link]
 </p>
 
 
@@ -41,10 +40,3 @@ This project was made by a group of 4 :
 - Loris "[ZEN](https://github.com/Lolozendev)" Pistilli (Developer)
 - Franck "Francky" Jiang (Database designer) 
 - Elie "Gyoza" Duboux (Databse designer)
-
-<!-- badge links -->
-[mariadb_shield]: https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white
-[mariadb_link]: https://mariadb.org/
-
-[python_shield]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
-[python_link]: https://www.python.org/
