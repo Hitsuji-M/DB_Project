@@ -46,16 +46,16 @@ class DatabaseHandler:
         res = requests.get(URL)
 
         if res.status_code < 200 or res.status_code >= 300:
-            print("mauvaise réponse : ", res.status_code)
+            print("Wrong status : ", res.status_code)
             sys.exit(1)
 
-        print("Requête réalisée avec succès !")
+        print("Request successfully done !")
         jsondata = res.json()
 
         with open('json_data.json', 'w') as outfile:
             json.dump(jsondata, outfile)
 
-        print("Mise à jour finie !")
+        print("Update done !")
 
     def clearValues(self) -> None:
         self.cur.execute("DELETE FROM TypeEncombrement;")
@@ -98,7 +98,6 @@ class DatabaseHandler:
     def insertRecords(self) -> None:
         records = self.file["records"]
         for record in records:
-            # print(json.dumps(record, indent=4, sort_keys=True))
 
             try:
                 latitude = record["geometry"]["coordinates"][0]
@@ -107,14 +106,15 @@ class DatabaseHandler:
                 latitude, longitude = 0.0, 0.0
 
             self.cur.execute(
-                f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
+                f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);"
+            )
+            
             if len(self.cur.fetchall()) == 0:
                 self.cur.execute(f"INSERT INTO Localisation VALUES(NULL, {longitude}, {latitude});")
                 self.cnx.commit()
 
             fields = record["fields"]
             num = fields["num_emprise"]
-            # print(num)
 
             surface = fields["surface"]
             debut, fin = fields["date_debut"], fields["date_fin"]
@@ -138,26 +138,32 @@ class DatabaseHandler:
                 station = "('')"
 
             self.cur.execute(
-                f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);")
+                f"SELECT idLocalisation FROM `Localisation` WHERE `Longitude` = round({longitude},15) AND `Latitude` = round({latitude},15);"
+            )
+            
             idLoc = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idNatureChantier FROM `NatureChantier` WHERE `Nature` = '{chantier}';")
+            
             try:
                 idNC = self.cur.fetchone()[0]
             except TypeError as _:
                 idNC = "NULL"
+            
             self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite LIKE '{moe}';")
             idMOE = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idEntite FROM Entite WHERE NomEntite LIKE '{moa}';")
             idMOA = self.cur.fetchone()[0]
             self.cur.execute(f"SELECT idEncombrement FROM Encombrement WHERE NomEncombrement IN {detail};")
             valEnc = self.cur.fetchall()
+            
             self.cur.execute(
-                f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeStationnement IN {station};")
+                f"SELECT idStationnementImpact FROM ImpactStationnement WHERE TypeStationnement IN {station};"
+            )
             valIS = self.cur.fetchall()
 
-            # print(debut, fin)
             self.cur.execute(
-                f"INSERT INTO Chantier VALUES('{num}', {surface}, '{fin}', '{debut}', {idLoc}, {idNC}, {idMOE});")
+                f"INSERT INTO Chantier VALUES('{num}', {surface}, '{fin}', '{debut}', {idLoc}, {idNC}, {idMOE});"
+            )
             self.cur.execute(f"INSERT INTO MOA VALUES('{num}', {idMOA});")
 
             for val in valEnc:
@@ -165,7 +171,7 @@ class DatabaseHandler:
             for val in valIS:
                 self.cur.execute(f"INSERT INTO TypeStationnementImpacte VALUES('{num}', {val[0]});")
             self.cnx.commit()
-        print("Insertion des records finie")
+        print("Insertion of all the records done !")
 
 
 if __name__ == '__main__':
